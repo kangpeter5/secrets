@@ -1,0 +1,38 @@
+<h1>Welcome <%= @user.name %></h1>
+<p>
+	<a href="/users/<%= @user.id %>/edit">Edit Profile</a>
+</p>
+
+	<form action="/secrets" method="post">
+		<%= token_tag nil %>
+		<label>New Secret
+		<input type="text" name="secret[content]" value="New Secret"/></label>
+		<button type="submit">Create Secret</button>
+	</form>
+
+<% @secrets.each do |secret| %>
+	<p><%= secret.content %></p>
+	<p><%= secret.likes.count %> likes</p>
+	<% if secret.users_liked.include?(current_user) %>
+		<form action='/likes/<%= secret.find_like_id current_user%>' method='post'>
+		    <input type='hidden' name='_method' value='delete'>
+		    <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+		    <input type='submit' value='Unlike'>
+		</form>
+	<% else %> 
+		<form action='/likes' method='post'>
+		    <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+		    <input type='hidden' name='secret_id' value='<%= secret.id %>'>
+		    <input type='submit' value='Like'>
+		</form>
+	<% end %>  
+
+	<% if current_user == secret.user %>
+	<form action="/secrets/<%= secret.id %>" method="post">
+		<%= token_tag nil %>
+		<input type="hidden" name="_method" value="delete" />
+		<button type="submit" value="Delete">Delete</button>
+	</form>
+	<% end %>
+
+<% end %>
