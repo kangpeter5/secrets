@@ -82,4 +82,4 @@ production:
   <<: *default
   database: seeks_production
   username: ubuntu
-  password: <%= ENV['SEEKS_DATABASE_PASSWORD'] %>
+  password: 
